@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DogeFileManager</title>
+    <link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .list-group li {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body class="bg-light w-50 p-3" style="margin: auto;">
+    <div class="py-5 text-center">
+        <div class="py-5 text-center" style="padding-top: 0 !important;">
+            <img src="https://i.pinimg.com/originals/46/ef/b6/46efb6b132359fffe2b27a2afad41aec.png" style="width: 200px;">
+            <h2>DogeFileManager</h2>
+            {% block msg %}{% endblock %}
+            <form method="post" action="/files" enctype="multipart/form-data">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroupFileAddon01">File upload:</span>
+                </div>
+                <div class="custom-file">
+                  <input type="file" name="uploadedFile" id="inputGroupFile01">
+                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+                <div class="input-group-append">
+                    <input type="submit" value="Upload" style="background: #84c7e6; " class="input-group-text">
+                </div>
+              </div>
+            </form>
+            <br>
+            <p class="lead">Version 0.1</p>
+            <ul class="list-group" id="file-list"></ul>
+        </div>
+    </div>
+    <script>
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", "/files");
+        xhr.send();
+
+        xhr.onload = function() {
+            if(xhr.status === 200) {
+                var ul = document.getElementById("file-list");
+                var filesList = JSON.parse(xhr.response);
+                for(var i=0; i < filesList.length; ++i) {
+                    var li = document.createElement("li");
+                    li.className = "list-group-item";
+                    var a = document.createElement("a");
+                    a.appendChild(document.createTextNode(filesList[i]));
+                    a.href = "/files/" + encodeURI(filesList[i]);
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            }
+        }
+    </script>
+    <script src="/static/js/jquery-3.4.1.slim.min.js"></script>
+    <script>
+        $('#inputGroupFile01').on('change',function(){
+            //get the file name
+            var fileName = $(this).val();
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName.replace('C:\\fakepath\\', ""));
+        })
+    </script>
+</body>
+</html>
